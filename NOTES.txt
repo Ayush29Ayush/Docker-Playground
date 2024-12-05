@@ -1,0 +1,136 @@
+Refer => https://www.youtube.com/watch?v=GFgJkfScVNU
+
+#! We will cover
+1. What is Docker?
+2. Why, when and how you should use Docker?
+3. How to make your life easier by using Docker?
+4. Master Docker Fundamentals
+5. DockerHub
+6. Create and publish your own Docker image
+7. Run and manage your own Docker container
+8. Advanced concepts like volumns, networks, port mapping and more
+9. Learn how to fully dockerize apps for frontend, backend and databases
+10. Dockerfile syntax
+11. All the most important Docker commands like docker compose, docker init, docker scout, docker compose watch, etc
+
+#? What is Docker?
+Think of docker as a lunch box where we pack not only our main dish i.e our code but also other ingredients like code dependencies, config files, etc.
+
+This helps us get consistency, portability and speed of deployment without missing out any dependencies and makes sure our code runs on any environment.
+
+Docker is a platform that enables the development, packaging and execution of applications in a unified environment.
+Docker will act as a self contained runtime environment for our applications that includes it's own operating system, libraries and dependencies.
+
+#? Why bother using Docker at all?
+1. Consistency across environments i.e it works on everyone's machine
+2. Everyone uses the same commands to run their applications
+3. Isolation of dependencies
+4. Portability
+5. Version Control using Docker and can rollback to previous version if something goes wrong
+6. Scalability
+7. Devops Integration 
+8. Ensures: 
+    a. Developed
+    b. Tested
+    c. Deployed Efficiently
+
+#? How does Docker work?
+1. Docker revolves around 2 most important concepts -> containers and images
+Example Analogy -> Imagine Ubuntu is a container and iso file is the image.
+
+2. Docker Image is a lightweight, standalone, executable package of software that includes everything needed to run an application like code, runtime, libraries, system tools, etc. It is the image of your application that is used to create a container. The image is a tar file that contains all the necessary files to run the application in a specific environment. 
+
+3. Docker Container is a runtime environment for an application that packages software and its dependencies into a self-contained unit.
+
+4. Docker Volume is a persistent data storage mechanism that allows you to share data between containers, host machine and servers.
+
+5. Docker Network is a mechanism that allows containers to communicate with each other.
+
+6. The Docker workflow is a combination of these three concepts:
+    a. Docker Client
+    b. Docker Host (Docker Daemon)
+    c. Docker Registry (Docker Hub) 
+
+a) Docker Client
+    * Docker Client is the command line interface that is used to manage Docker containers and images.
+
+b) Docker Host (Docker Daemon)
+    * Docker Host is the server that runs Docker containers and images.
+
+c) Docker Registry (Docker Hub)
+    * Docker Registry is a public repository that stores Docker images.
+     
+#? How to use Docker?
+1. Install Docker on your machine
+2. Write a Dockerfile for your application and build an image
+
+#TODO => DOCKER IMPORTANT COMMANDS
+1. FROM image[:tag] [AS name] -> This command is used to specify the base image for the Dockerfile. Example => FROM ubuntu:20.04
+2. WORKDIR /path/to/workdir -> This command is used to set the working directory for the Dockerfile. Example => WORKDIR /app
+3. COPY [--chown=<user>:<group>] <src>... <desc> -> This command is used to copy files or directories from the host to the container. Example => COPY . /app
+4. RUN <command> -> This command is used to run a command inside the container. Example => RUN python manage.py runserver 0.0.0.0:8000
+5. EXPOSE <port> [<port>/<protocol>...] -> This command is used to expose a port from the container to the host. Example => EXPOSE 8000/tcp
+6. ENV KEY=value -> This command is used to set environment variables in the container. Example => ENV NODE_ENV=production
+7. ARG <name>[=<default value>] -> This command is used to set arguments in the Dockerfile. Example => ARG NODE_VERSION=20
+8. VOLUME ["/data"] -> This command is used to create a volume in the container. Example => VOLUME /myvol
+9. CMD ["<command>", "<arg>..."] -> This command is used to set the command to run when the container is started. Example => CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+10. HEALTHCHECK <test> -> This command is used to check the health of the container. Example => HEALTHCHECK CMD curl -f http://localhost:8000 || exit 1
+11. LABEL <key>=<value> -> This command is used to add metadata to the image. Example => LABEL maintainer="John Doe"
+
+#? Practice
+1. Create a new folder named "docker_course", cd into it and use command "docker pull ubuntu" to pull the ubuntu image.
+"
+PS D:\Docker JSMastery Tutorial\docker_course> docker pull ubuntu
+Using default tag: latest
+latest: Pulling from library/ubuntu
+de44b265507a: Pull complete
+Digest: sha256:80dd3c3b9c6cecb9f1667e9290b3bc61b78c2678c02cbdae5f0fea92cc6734ab
+Status: Downloaded newer image for ubuntu:latest
+docker.io/library/ubuntu:latest
+
+What's next:
+    View a summary of image vulnerabilities and recommendations → docker scout quickview ubuntu
+"
+2. Run the docker command "docker run -it ubuntu bash" to run the bash terminal inside the ubuntu container.
+
+#! How to use an existing instance of Docker rather than creating a new one everytime?
+
+"
+PS D:\Docker JSMastery Tutorial> docker ps -a              
+CONTAINER ID   IMAGE                                                  COMMAND                  CREATED          STATUS                      PORTS     NAMES
+08f871db2d61   ubuntu                                                 "bash"                   25 seconds ago   Up 25 seconds                         priceless_payne
+e03e65e6acd8   ubuntu                                                 "zsh"                    17 hours ago     Created                               wonderful_bose
+52c3a2fd749f   ubuntu                                                 "bash"                   17 hours ago     Exited (0) 17 hours ago               sweet_hamilton
+0e57782eba34   ubuntu                                                 "/bin/bash"              17 hours ago     Exited (0) 17 hours ago               agitated_blackburn
+6a136d1e3d86   yagyaproject-server                                    "/bin/sh -c 'python …"   18 hours ago     Exited (137) 18 hours ago             yagyaproject-server-1
+773f340d7735   docker.elastic.co/elasticsearch/elasticsearch:8.13.0   "/bin/tini -- /usr/l…"   7 days ago       Exited (143) 7 days ago               django_elasticsearch_incomplete-elasticsearch-1
+1ac2ee6ec501   docker.elastic.co/elasticsearch/elasticsearch:8.13.0   "/bin/tini -- /usr/l…"   7 days ago       Exited (137) 7 days ago               django_elasticsearch-elasticsearch-1
+ac9b20fc086f   35a88802559d                                           "/bin/bash"              4 months ago     Exited (255) 7 days ago               jolly_dijkstra
+459ddacf061f   hello-docker                                           "docker-entrypoint.s…"   4 months ago     Exited (0) 4 months ago               funny_wright
+e280f4894d5b   hello-world                                            "/hello"                 4 months ago     Exited (0) 4 months ago               wizardly_jackson
+b5ff72a96c1e   redis                                                  "docker-entrypoint.s…"   4 months ago     Exited (0) 4 months ago               wizardly_cray
+5030f5746047   rnwood/smtp4dev:latest                                 "dotnet /app/Rnwood.…"   5 months ago     Exited (0) 5 months ago               boring_bouman
+PS D:\Docker JSMastery Tutorial> docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED          STATUS          PORTS     NAMES
+08f871db2d61   ubuntu    "bash"    32 seconds ago   Up 31 seconds             priceless_payne
+PS D:\Docker JSMastery Tutorial>
+"
+
+"
+PS D:\Docker JSMastery Tutorial> docker start 0e57782eba34
+0e57782eba34
+PS D:\Docker JSMastery Tutorial> docker ps
+CONTAINER ID   IMAGE     COMMAND       CREATED              STATUS              PORTS     NAMES
+08f871db2d61   ubuntu    "bash"        About a minute ago   Up About a minute             priceless_payne   
+0e57782eba34   ubuntu    "/bin/bash"   17 hours ago         Up 15 seconds                 agitated_blackburn
+PS D:\Docker JSMastery Tutorial> docker attach 0e57782eba34
+root@0e57782eba34:/# ls
+bin  boot  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
+root@0e57782eba34:/# cd home/
+root@0e57782eba34:/home# touch test1.txt
+root@0e57782eba34:/home# ls
+test1.txt  ubuntu
+"
+1. Get the id of the container using the command "docker ps -a"
+2. Run the command "docker start <id>" to start the container.
+3. Run the command "docker attach <id>" to attach to the container.
