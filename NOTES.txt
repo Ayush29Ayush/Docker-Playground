@@ -134,3 +134,33 @@ test1.txt  ubuntu
 1. Get the id of the container using the command "docker ps -a"
 2. Run the command "docker start <id>" to start the container.
 3. Run the command "docker attach <id>" to attach to the container.
+
+#? Hello Docker Demo
+1. Create a new folder named "hello-docker" and cd into it.
+2. Create a hello.js with console.log("Hello from Docker!");
+3. Write a Dockerfile for your application and build an image.
+"
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY . .
+
+CMD ["node", "hello.js"]
+"
+4. Run the command "docker build -t hello-docker ." to build the image. Here -t is the tag for the image.
+5. Verify that the images are created using the command "docker images".
+6. Run in terminal "docker run hello-docker"
+"
+PS D:\Docker JSMastery Tutorial\hello-docker> docker run hello-docker    
+Hello from Docker!
+"
+7. To open the hello-docker image in interactive mode, use the commmand "docker run -it hello-docker sh"
+"
+PS D:\Docker JSMastery Tutorial\hello-docker> docker run -it hello-docker sh
+/app # ls
+Dockerfile  hello.js
+/app # node hello.js
+Hello from Docker!
+/app # 
+"
