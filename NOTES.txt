@@ -231,3 +231,180 @@ node_modules/
 12. Remove all images using "docker image prune"
 
 13. To reflect the changes done in your project, run the command "docker run -p 5173:5173 -v "$(pwd):/app" -v /app/node_modules react-docker". This is only useful during development stage.
+
+#? Publish Docker Image
+1. Login to Docker Hub using "docker login"
+2. Publish the image using "docker tag react-docker ayush0029/react-docker"
+3. Push the image using "docker push ayush0029/react-docker"
+"
+PS D:\Docker JSMastery Tutorial\react-docker> docker push ayush0029/react-docker
+Using default tag: latest
+The push refers to repository [docker.io/ayush0029/react-docker]
+4a51eeb1cab3: Pushed
+ac795af65b42: Pushed
+1ca952be5f85: Pushed
+7f437e83c926: Pushed
+da1b9bfff243: Pushed
+f302b4f88222: Pushed
+99b162fdf7bb: Mounted from library/node
+6553e56d4900: Mounted from library/node
+06de089973a1: Mounted from library/node
+75654b8eeebd: Mounted from library/node
+latest: digest: sha256:3d605c159d447e82ebca13ba0ea3520ebd51ac9cac69520e3066ea345f020a9e size: 2405
+"
+
+#? Docker Compose
+1. We can automate the process of creating and running multiple containers using Docker Compose.
+2. Docker Compose is a tool that defines the services that make up our application and their configuration.
+3. Command => docker compose up
+
+4. Analogy => Docker compose is like a chefs recipe book to create multiple meals. It allows us to define and manage multiple cooking processes in one go. It tells how different parts of the meal should interact.
+
+#? Vite-Project Demo (using docker init and docker compose)
+1. npm create vite@latest vite-project
+2. cd vite-project
+3. docker init
+"
+PS D:\Docker JSMastery Tutorial\vite-project> docker init       
+
+Welcome to the Docker Init CLI!
+
+This utility will walk you through creating the following files with sensible defaults for your project:
+  - .dockerignore
+  - Dockerfile
+  - compose.yaml
+  - README.Docker.md
+
+Let's get started!
+
+? What application platform does your project use? Node
+? What version of Node do you want to use? (20.17.0)      
+       
+? What version of Node do you want to use? 20.17.0 
+? Which package manager do you want to use? npm
+? Do you want to run "npm run build" before starting your server? No
+? What command do you want to use to start the app? [tab for suggestions] npm run dev
+
+? What command do you want to use to start the app? npm run dev
+? What port does your server listen on? 5173
+
+? What port does your server listen on? 5173
+
+✔ Created → .dockerignore
+✔ Created → Dockerfile
+✔ Created → compose.yaml
+✔ Created → README.Docker.md
+
+→ Your Docker files are ready!
+  Review your Docker files and tailor them to your application.
+  Consult README.Docker.md for information about using the generated files.
+
+! Warning → The following files required to run your application were not found. Create them before running your application:
+  - package-lock.json
+
+What's next?
+  Start your application by running → docker compose up --build
+  Your application will be available at http://localhost:5173
+PS D:\Docker JSMastery Tutorial\vite-project> 
+"
+
+** Dockerfile **
+"
+# set the base image to create the image for react app
+FROM node:20-alpine
+
+# create a user with permissions to run the app
+# -S -> create a system user
+# -G -> add the user to a group
+# This is done to avoid running the app as root
+# If the app is run as root, any vulnerability in the app can be exploited to gain access to the host system
+# It's a good practice to run the app as a non-root user
+RUN addgroup app && adduser -S -G app app
+
+# set the user to run the app
+USER app
+
+# set the working directory to /app
+WORKDIR /app
+
+# copy package.json and package-lock.json to the working directory
+# This is done before copying the rest of the files to take advantage of Docker’s cache
+# If the package.json and package-lock.json files haven’t changed, Docker will use the cached dependencies
+COPY package*.json ./
+
+# sometimes the ownership of the files in the working directory is changed to root
+# and thus the app can't access the files and throws an error -> EACCES: permission denied
+# to avoid this, change the ownership of the files to the root user
+USER root
+
+# change the ownership of the /app directory to the app user
+# chown -R <user>:<group> <directory>
+# chown command changes the user and/or group ownership of for given file.
+RUN chown -R app:app .
+
+# change the user back to the app user
+USER app
+
+# install dependencies
+RUN npm install
+
+# copy the rest of the files to the working directory
+COPY . .
+
+# expose port 5173 to tell Docker that the container listens on the specified network ports at runtime
+EXPOSE 5173
+
+# command to run the app
+CMD npm run dev
+"
+
+** .dockerignore **
+"
+# Include any files or directories that you don't want to be copied to your
+# container here (e.g., local build artifacts, temporary files, etc.).
+#
+# For more help, visit the .dockerignore file reference guide at
+# https://docs.docker.com/go/build-context-dockerignore/
+
+**/.classpath
+**/.dockerignore
+**/.env
+**/.git
+**/.gitignore
+**/.project
+**/.settings
+**/.toolstarget
+**/.vs
+**/.vscode
+**/.next
+**/.cache
+**/*.*proj.user
+**/*.dbmdl
+**/*.jfm
+**/charts
+**/docker-compose*
+**/compose.y*ml
+**/Dockerfile*
+**/node_modules
+**/npm-debug.log
+**/obj
+**/secrets.dev.yaml
+**/values.dev.yaml
+**/build
+**/dist
+LICENSE
+README.md
+"
+
+** compose.yaml **
+"
+services:
+  web:
+    build:
+      context: .
+    ports:
+      - 5173:5173
+    volumes:
+      - .:/app
+      - /app/node_modules
+"
