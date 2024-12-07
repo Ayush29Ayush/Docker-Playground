@@ -408,3 +408,24 @@ services:
       - .:/app
       - /app/node_modules
 "
+
+#? Docker Compose Watch
+1. Docker Compose Watch is a feature that allows you to automatically build and run your Docker containers when the source code changes.
+2. It listens to our changes and does something like rebuilding the container, app rerunning, etc.
+3. Three things Compose Watch does:
+  a) Sync (syncs the source code to the container)
+  b) Rebuild (rebuilds the container)
+  c) Sync-restart (syncs the source code to the container and restarts the container)
+
+#? Mern Docker (use docker compose up && docker compose watch)
+* refer mern-docker folder
+* docker compose up
+* docker compose watch (Updates in real-time. Helps us to automatically build and run our containers when the source code changes)
+* Now change the code and see those changes reflecting in real-time in the browser
+
+#? Docker Scout
+1. Docker Scout is a tool that allows you to scan your Docker images for vulnerabilities and get recommendations on how to fix them.
+2. You can use Docker Scout in:
+  a) Docker Desktop
+  b) Docker Hub
+  c) Docker CLI
